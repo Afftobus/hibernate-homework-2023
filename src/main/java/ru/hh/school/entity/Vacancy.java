@@ -8,31 +8,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-//TODO: оформите entity
+@Entity
 public class Vacancy {
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "vacancy_id")
   private Integer id;
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "employer_id")
   private Employer employer;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id", referencedColumnName = "area_id")
   private Area area;
 
   private String title;
 
   private String description;
 
+  @Column(name = "compensation_from")
   private Integer compensationFrom;
 
-  private Integer  compensationTo;
+  @Column(name = "compensation_to")
+  private Integer compensationTo;
 
+  @Column(name = "compensation_gross")
   private Boolean compensationGross;
 
+  @Column(name = "creation_time")
   private LocalDateTime creationTime;
 
+  @Column(name = "archiving_time")
   private LocalDateTime archivingTime;
 
   public Vacancy() {
@@ -94,13 +102,17 @@ public class Vacancy {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+
     Vacancy vacancy = (Vacancy) o;
-    return Objects.equals(id, vacancy.id);
+
+    if (!title.equals(vacancy.title)) return false;
+    return creationTime.equals(vacancy.creationTime);
   }
 
   @Override
   public int hashCode() {
-    return 17;
+    int result = title.hashCode();
+    result = 31 * result + creationTime.hashCode();
+    return result;
   }
-
 }
