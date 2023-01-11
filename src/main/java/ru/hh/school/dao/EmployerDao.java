@@ -20,7 +20,7 @@ public class EmployerDao extends GenericDao {
     return getSession()
         .createQuery(
             "SELECT e FROM Employer as e " +
-                " JOIN FETCH e.vacancies " +
+                " LEFT JOIN FETCH e.vacancies " +
                 " WHERE e.id = :employerId ", Employer.class)
         .setParameter("employerId", employerId)
         .getSingleResult();
