@@ -4,8 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
 
 public class GenericDao {
   private final SessionFactory sessionFactory;
@@ -25,12 +23,10 @@ public class GenericDao {
     if (object == null) {
       return;
     }
-    getSession().save(object);
+    getSession().saveOrUpdate(object);
   }
 
   protected Session getSession() {
     return sessionFactory.getCurrentSession();
   }
-
-
 }

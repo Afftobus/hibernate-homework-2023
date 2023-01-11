@@ -1,9 +1,9 @@
 package ru.hh.school.service;
 
-import ru.hh.school.util.TransactionHelper;
 import ru.hh.school.dao.EmployerDao;
 import ru.hh.school.dao.GenericDao;
 import ru.hh.school.entity.Employer;
+import ru.hh.school.util.TransactionHelper;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -69,6 +69,7 @@ public class EmployerService {
     transactionHelper.inTransaction(() -> {
       employer.setBlockTime(LocalDateTime.now());
       employer.getVacancies().forEach(v -> v.setArchivingTime(LocalDateTime.now()));
+      genericDao.save(employer);
     });
   }
 
