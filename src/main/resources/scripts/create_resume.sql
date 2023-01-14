@@ -4,6 +4,6 @@ create sequence resume_id_seq
   increment by 10;
 
 create table resume (
-  id int not null default nextval('resume_id_seq') primary key,
+  resume_id int not null default nextval('resume_id_seq') primary key,
   description text
 );
