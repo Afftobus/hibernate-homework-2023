@@ -18,7 +18,11 @@ public class EmployerDao extends GenericDao {
    */
   public Employer getEager(int employerId) {
     return getSession()
-        .createQuery("from Employer employer", Employer.class)
+        .createQuery(
+            "SELECT e FROM Employer AS e " +
+            " LEFT JOIN FETCH e.vacancies" +
+            " WHERE e.id = :eid", Employer.class)
+        .setParameter("eid", employerId)
         .getSingleResult();
   }
 
