@@ -18,11 +18,12 @@ public class Resume {
 
   @Id
   @GeneratedValue(generator = "sequence", strategy= GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "sequence", sequenceName = "resume_id_seq", allocationSize = 10)
   private Integer id;
 
   private String description;
 
-  Resume() {}
+  public Resume() {}
 
   public Resume(String description) {
     this.description = description;
