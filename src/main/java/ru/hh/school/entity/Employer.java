@@ -12,12 +12,17 @@ import java.util.Objects;
 @Entity
 @Table(name = "employer")
 public class Employer {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "employer_id")
   private Integer id;
+
   @NaturalId
-  @Column(name = "company_name", nullable = false, unique = true) //TODO: возможно не уникальна
+  @Column(
+          name = "company_name",
+          nullable = false,
+          unique = true) //TODO: возможно не уникальна
   private String companyName;
 
   // не используйте java.util.Date
@@ -25,8 +30,12 @@ public class Employer {
   @Column(name = "creation_time")
   private LocalDateTime creationTime;
 
-  @OneToMany(mappedBy = "employer")
+  @OneToMany(
+          mappedBy = "employer",
+          cascade = CascadeType.ALL,
+          orphanRemoval = true)
   private List<Vacancy> vacancies = new ArrayList<>();
+
   @Column(name = "block_time")
   private LocalDateTime blockTime;
 

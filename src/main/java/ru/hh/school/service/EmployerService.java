@@ -6,6 +6,7 @@ import ru.hh.school.dao.GenericDao;
 import ru.hh.school.entity.Employer;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +68,7 @@ public class EmployerService {
     // про возврат в managed состояние: https://vladmihalcea.com/jpa-persist-and-merge
 
     transactionHelper.inTransaction(() -> {
+      genericDao.merge(employer);
       employer.setBlockTime(LocalDateTime.now());
       employer.getVacancies().forEach(v -> v.setArchivingTime(LocalDateTime.now()));
     });
