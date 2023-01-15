@@ -4,8 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
 
 public class GenericDao {
   private final SessionFactory sessionFactory;
@@ -17,8 +15,12 @@ public class GenericDao {
   // GenericDao нужно для предоставления общих методов для работы с сущностями, например, можно описать
   // методы get или save, которые нечасто будут различаться.
 
-  public void merge(Object object){
+  public void update(Object object){
     getSession().update(object);
+  }
+
+  public SessionFactory getSessionFactory() {
+    return sessionFactory;
   }
 
   public <T> T get(Class<T> clazz, Serializable id) {

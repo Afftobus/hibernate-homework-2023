@@ -18,7 +18,6 @@ public class Employer {
   @Column(name = "employer_id")
   private Integer id;
 
-  @NaturalId
   @Column(
           name = "company_name",
           nullable = false,

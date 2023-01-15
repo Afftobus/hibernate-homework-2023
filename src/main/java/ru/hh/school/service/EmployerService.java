@@ -6,7 +6,6 @@ import ru.hh.school.dao.GenericDao;
 import ru.hh.school.entity.Employer;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -61,16 +60,36 @@ public class EmployerService {
       return;
     }
 
+    transactionHelper.inTransaction(() -> {
+      Employer employer1 = employerDao.getEager(employerId);
+      employer1.getVacancies().clear();
+    });
+
     // TODO: сделать сохранение состояния работодателя и его вакансий
     // сейчас Employer в detached состоянии, т.к. сессия закрылась.
     // это нужно учитывать при последующей работе с таковым
     // про состояния: https://vladmihalcea.com/a-beginners-guide-to-jpa-hibernate-entity-state-transitions/
     // про возврат в managed состояние: https://vladmihalcea.com/jpa-persist-and-merge
 
+    /*transactionHelper.inTransaction(() -> {
+      genericDao.getSessionFactory().getCurrentSession().createQuery("update Employer emp " +
+              "set emp.blockTime = :bt " +
+              "where emp.id = :id")
+              .setParameter("bt", LocalDateTime.now())
+              .setParameter("id", employerId)
+              .executeUpdate();
+      genericDao.getSessionFactory().getCurrentSession().createQuery("update Vacancy vac " +
+                      "set vac.archivingTime = :at " +
+                      "where vac.employer.id = :employer")
+              .setParameter("at", LocalDateTime.now())
+              .setParameter("employer", employerId)
+              .executeUpdate();
+    });*/
+
     transactionHelper.inTransaction(() -> {
-      genericDao.merge(employer);
       employer.setBlockTime(LocalDateTime.now());
       employer.getVacancies().forEach(v -> v.setArchivingTime(LocalDateTime.now()));
+      genericDao.update(employer);
     });
   }
 
