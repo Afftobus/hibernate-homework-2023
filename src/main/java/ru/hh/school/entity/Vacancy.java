@@ -1,5 +1,7 @@
 package ru.hh.school.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,26 +15,43 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 //TODO: оформите entity
+@Entity
+@Table(name = "vacancy", schema = "public")
 public class Vacancy {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "vacancy_id", nullable = false, updatable = false)
   private Integer id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "employer_id", nullable = false)
   private Employer employer;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id")
   private Area area;
 
+  @Column(name = "title", nullable = false)
   private String title;
 
+  @Column(name = "description")
   private String description;
 
+  @Column(name = "compensation_from")
   private Integer compensationFrom;
 
+  @Column(name = "compensation_to")
   private Integer  compensationTo;
 
+  @Column(name = "compensation_gross")
   private Boolean compensationGross;
 
+  @CreationTimestamp
+  @Column(name = "creation_time", nullable = false, updatable = false)
   private LocalDateTime creationTime;
 
+  @Column(name = "archiving_time")
   private LocalDateTime archivingTime;
 
   public Vacancy() {
@@ -91,16 +110,16 @@ public class Vacancy {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Vacancy vacancy = (Vacancy) o;
-    return Objects.equals(id, vacancy.id);
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (other == null || getClass() != other.getClass()) return false;
+    Vacancy otherVacancy = (Vacancy) other;
+    return id.equals(otherVacancy.getId());
   }
 
   @Override
   public int hashCode() {
-    return 17;
+    return (31 * id) ^ 2 + 31 * Objects.hash(title);
   }
 
 }
