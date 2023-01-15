@@ -52,18 +52,10 @@ public class EmployerService {
   public void blockIfEmployerUseBadWords(int employerId) {
     Employer employer = transactionHelper.inTransaction(() -> employerDao.getEager(employerId));
 
-    if (!checkIfWordIsBad(employer.getCompanyName())) {
+    if (!checkIfWordIsBad(employer.getCompanyName()) &&
+            employer.getVacancies().stream().noneMatch(v -> checkIfWordIsBad(v.getTitle()))) {
       return;
     }
-
-    if (employer.getVacancies().stream().noneMatch(v -> checkIfWordIsBad(v.getTitle()))) {
-      return;
-    }
-
-    transactionHelper.inTransaction(() -> {
-      Employer employer1 = employerDao.getEager(employerId);
-      employer1.getVacancies().clear();
-    });
 
     // TODO: сделать сохранение состояния работодателя и его вакансий
     // сейчас Employer в detached состоянии, т.к. сессия закрылась.
@@ -71,25 +63,8 @@ public class EmployerService {
     // про состояния: https://vladmihalcea.com/a-beginners-guide-to-jpa-hibernate-entity-state-transitions/
     // про возврат в managed состояние: https://vladmihalcea.com/jpa-persist-and-merge
 
-    /*transactionHelper.inTransaction(() -> {
-      genericDao.getSessionFactory().getCurrentSession().createQuery("update Employer emp " +
-              "set emp.blockTime = :bt " +
-              "where emp.id = :id")
-              .setParameter("bt", LocalDateTime.now())
-              .setParameter("id", employerId)
-              .executeUpdate();
-      genericDao.getSessionFactory().getCurrentSession().createQuery("update Vacancy vac " +
-                      "set vac.archivingTime = :at " +
-                      "where vac.employer.id = :employer")
-              .setParameter("at", LocalDateTime.now())
-              .setParameter("employer", employerId)
-              .executeUpdate();
-    });*/
-
     transactionHelper.inTransaction(() -> {
-      employer.setBlockTime(LocalDateTime.now());
-      employer.getVacancies().forEach(v -> v.setArchivingTime(LocalDateTime.now()));
-      genericDao.update(employer);
+      employerDao.block(employerId);
     });
   }
 

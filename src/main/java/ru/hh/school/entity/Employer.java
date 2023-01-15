@@ -20,8 +20,7 @@ public class Employer {
 
   @Column(
           name = "company_name",
-          nullable = false,
-          unique = true) //TODO: возможно не уникальна
+          nullable = false)
   private String companyName;
 
   // не используйте java.util.Date

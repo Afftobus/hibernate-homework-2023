@@ -3,6 +3,8 @@ package ru.hh.school.dao;
 import org.hibernate.SessionFactory;
 import ru.hh.school.entity.Employer;
 
+import java.time.LocalDateTime;
+
 public class EmployerDao extends GenericDao {
 
   public EmployerDao(SessionFactory sessionFactory) {
@@ -24,6 +26,21 @@ public class EmployerDao extends GenericDao {
                 "where employer.id = :employerId", Employer.class)
             .setParameter("employerId", employerId)
         .getSingleResult();
+  }
+
+  public void block(int employerId) {
+    getSession().createQuery("update Employer employer " +
+                    "set employer.blockTime = :blockTime " +
+                    "where employer.id = :id")
+            .setParameter("blockTime", LocalDateTime.now())
+            .setParameter("id", employerId)
+            .executeUpdate();
+    getSession().createQuery("update Vacancy vac " +
+                    "set vac.archivingTime = :archivingTime " +
+                    "where vac.employer.id = :employerId")
+            .setParameter("archivingTime", LocalDateTime.now())
+            .setParameter("employerId", employerId)
+            .executeUpdate();
   }
 
 }
