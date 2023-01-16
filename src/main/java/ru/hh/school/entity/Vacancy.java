@@ -1,38 +1,56 @@
 package ru.hh.school.entity;
 
-import javax.persistence.Column;
+import org.hibernate.Hibernate;
+
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 //TODO: оформите entity
+@Entity
+@Table(name = "vacancy")
 public class Vacancy {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "vacancy_id")
   private Integer id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "employer_id", nullable = false)
   private Employer employer;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id")
   private Area area;
 
+  @Column(name = "title", nullable = false)
   private String title;
 
+  @Column(name = "description")
   private String description;
 
+  @Column(name = "compensation_from")
   private Integer compensationFrom;
 
-  private Integer  compensationTo;
+  @Column(name = "compensation_to")
+  private Integer compensationTo;
 
+  @Column(name = "compensation_gross")
   private Boolean compensationGross;
 
+  @Column(name = "creation_time")
   private LocalDateTime creationTime;
 
+  @Column(name = "archiving_time")
   private LocalDateTime archivingTime;
 
   public Vacancy() {
@@ -40,10 +58,6 @@ public class Vacancy {
 
   public Vacancy(Employer employer) {
     this.employer = employer;
-  }
-
-  public void setArea(Area area) {
-    this.area = area;
   }
 
   public Integer getId() {
@@ -62,6 +76,14 @@ public class Vacancy {
     this.employer = employer;
   }
 
+  public Area getArea() {
+    return area;
+  }
+
+  public void setArea(Area area) {
+    this.area = area;
+  }
+
   public String getTitle() {
     return title;
   }
@@ -70,16 +92,44 @@ public class Vacancy {
     this.title = title;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public Integer getCompensationFrom() {
+    return compensationFrom;
   }
 
   public void setCompensationFrom(Integer compensationFrom) {
     this.compensationFrom = compensationFrom;
   }
 
+  public Integer getCompensationTo() {
+    return compensationTo;
+  }
+
   public void setCompensationTo(Integer compensationTo) {
     this.compensationTo = compensationTo;
+  }
+
+  public Boolean getCompensationGross() {
+    return compensationGross;
+  }
+
+  public void setCompensationGross(Boolean compensationGross) {
+    this.compensationGross = compensationGross;
+  }
+
+  public LocalDateTime getCreationTime() {
+    return creationTime;
+  }
+
+  public void setCreationTime(LocalDateTime creationTime) {
+    this.creationTime = creationTime;
   }
 
   public LocalDateTime getArchivingTime() {
@@ -93,14 +143,14 @@ public class Vacancy {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
     Vacancy vacancy = (Vacancy) o;
-    return Objects.equals(id, vacancy.id);
+    return id != null && Objects.equals(id, vacancy.id);
   }
 
   @Override
   public int hashCode() {
-    return 17;
+    return getClass().hashCode();
   }
 
 }

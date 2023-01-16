@@ -52,11 +52,8 @@ public class EmployerService {
   public void blockIfEmployerUseBadWords(int employerId) {
     Employer employer = transactionHelper.inTransaction(() -> employerDao.getEager(employerId));
 
-    if (!checkIfWordIsBad(employer.getCompanyName())) {
-      return;
-    }
-
-    if (employer.getVacancies().stream().noneMatch(v -> checkIfWordIsBad(v.getTitle()))) {
+    if (!checkIfWordIsBad(employer.getCompanyName()) &&
+            employer.getVacancies().stream().noneMatch(v -> checkIfWordIsBad(v.getTitle()))) {
       return;
     }
 
@@ -67,8 +64,7 @@ public class EmployerService {
     // про возврат в managed состояние: https://vladmihalcea.com/jpa-persist-and-merge
 
     transactionHelper.inTransaction(() -> {
-      employer.setBlockTime(LocalDateTime.now());
-      employer.getVacancies().forEach(v -> v.setArchivingTime(LocalDateTime.now()));
+      employerDao.block(employerId);
     });
   }
 
