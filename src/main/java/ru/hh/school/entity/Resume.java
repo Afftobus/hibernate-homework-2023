@@ -2,7 +2,13 @@ package ru.hh.school.entity;
 
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
 import java.util.Objects;
 
 //TODO: оформите entity
