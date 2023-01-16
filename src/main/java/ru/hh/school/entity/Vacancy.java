@@ -13,26 +13,40 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 //TODO: оформите entity
+@Entity
+@Table(name = "vacancy")
 public class Vacancy {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "vacancy_id")
   private Integer id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "employer_id")
   private Employer employer;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id")
   private Area area;
 
   private String title;
 
   private String description;
 
+  @Column(name = "compensation_from")
   private Integer compensationFrom;
 
+  @Column(name = "compensation_to")
   private Integer  compensationTo;
 
+  @Column(name = "compensation_gross")
   private Boolean compensationGross;
 
+  @Column(name = "creation_time")
   private LocalDateTime creationTime;
 
+  @Column(name = "archiving_time")
   private LocalDateTime archivingTime;
 
   public Vacancy() {
@@ -100,7 +114,7 @@ public class Vacancy {
 
   @Override
   public int hashCode() {
-    return 17;
+    return Objects.hash(id, title);
   }
 
 }
