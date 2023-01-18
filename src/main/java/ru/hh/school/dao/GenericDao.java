@@ -2,7 +2,6 @@ package ru.hh.school.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
 import java.io.Serializable;
 
 public class GenericDao {
